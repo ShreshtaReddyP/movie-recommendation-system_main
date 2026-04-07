@@ -3,10 +3,6 @@ import streamlit as st
 import requests
 import pandas as pd
 
-# 🔥 Use TF-IDF (lighter + more stable on Streamlit)
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import linear_kernel
-
 
 def fetch_poster(movie_id):
     url = f"https://api.themoviedb.org/3/movie/{movie_id}?api_key=8265bd1679663a7ea12ac168da84d2e8&language=en-US"
@@ -20,7 +16,7 @@ def fetch_poster(movie_id):
     return "https://placehold.co/500x750?text=No+Poster"
 
 
-# ✅ Load data
+# Load data
 try:
     movies_dict = pickle.load(open('artifacts/movie_dict.pkl', 'rb'))
     movies = pd.DataFrame(movies_dict)
@@ -29,46 +25,31 @@ except:
     st.stop()
 
 
-# ✅ Create similarity dynamically (no big file needed)
-movies = movies.head(1000)  # keep app fast
-
-if 'tags' in movies.columns:
-    movies['tags'] = movies['tags'].astype(str).apply(lambda x: x.lower())
-    data = movies['tags']
-else:
-    data = movies['title']
-
-tfidf = TfidfVectorizer(stop_words='english')
-vectors = tfidf.fit_transform(data)
-
-similarity = linear_kernel(vectors, vectors)
+movies = movies.head(1000)
 
 
-# ✅ Recommendation function
+# Simple similarity (no sklearn)
+def simple_similarity(a, b):
+    a_words = set(str(a).lower().split())
+    b_words = set(str(b).lower().split())
+    return len(a_words & b_words)
+
+
 def recommend(movie):
-    movie_lower = movie.lower()
+    movie_row = movies[movies['title'] == movie].iloc[0]
 
-    # 🎯 Smart category boost
-    if movie_lower in ["tangled", "frozen", "moana", "lion king", "aladdin"]:
-        category_movies = movies[movies['title'].str.contains(
-            "Frozen|Moana|Lion|Beauty|Aladdin", case=False, na=False)]
-    elif movie_lower in ["interstellar", "gravity", "martian", "inception"]:
-        category_movies = movies[movies['title'].str.contains(
-            "space|star|galaxy|interstellar|gravity|martian", case=False, na=False)]
-    elif movie_lower in ["avengers", "iron man", "thor"]:
-        category_movies = movies[movies['title'].str.contains(
-            "avenger|thor|captain|marvel", case=False, na=False)]
-    else:
-        # 🔥 similarity-based fallback
-        index = movies[movies['title'] == movie].index[0]
-        distances = sorted(list(enumerate(similarity[index])), reverse=True, key=lambda x: x[1])
-        category_movies = movies.iloc[[i[0] for i in distances[1:10]]]
+    scores = []
 
-    category_movies = category_movies[category_movies['title'] != movie].head(5)
+    for i, row in movies.iterrows():
+        score = simple_similarity(movie_row.get('tags', movie), row.get('tags', row['title']))
+        scores.append((i, score))
+
+    scores = sorted(scores, key=lambda x: x[1], reverse=True)
 
     names, posters, years, ratings = [], [], [], []
 
-    for _, row in category_movies.iterrows():
+    for i, _ in scores[1:6]:
+        row = movies.iloc[i]
         names.append(row['title'])
         posters.append(fetch_poster(row['movie_id']))
         years.append(row['year'])
@@ -77,7 +58,6 @@ def recommend(movie):
     return names, posters, years, ratings
 
 
-# ✅ UI
 st.set_page_config(layout="wide")
 st.header('🎬 Movie Recommender System')
 
