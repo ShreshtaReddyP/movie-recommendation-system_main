@@ -2,8 +2,10 @@ import pickle
 import streamlit as st
 import requests
 import pandas as pd
-from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.feature_extraction.text import CountVectorizer
+
+# 🔥 Use TF-IDF (lighter + more stable on Streamlit)
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import linear_kernel
 
 
 def fetch_poster(movie_id):
@@ -27,7 +29,7 @@ except:
     st.stop()
 
 
-# ✅ CREATE SIMILARITY (NO FILE NEEDED)
+# ✅ Create similarity dynamically (no big file needed)
 movies = movies.head(1000)  # keep app fast
 
 if 'tags' in movies.columns:
@@ -36,17 +38,17 @@ if 'tags' in movies.columns:
 else:
     data = movies['title']
 
-cv = CountVectorizer(max_features=2000, stop_words='english')
-vectors = cv.fit_transform(data).toarray()
+tfidf = TfidfVectorizer(stop_words='english')
+vectors = tfidf.fit_transform(data)
 
-similarity = cosine_similarity(vectors)
+similarity = linear_kernel(vectors, vectors)
 
 
-# ✅ RECOMMEND FUNCTION (HYBRID)
+# ✅ Recommendation function
 def recommend(movie):
     movie_lower = movie.lower()
 
-    # 🎯 Smart genre-based boost
+    # 🎯 Smart category boost
     if movie_lower in ["tangled", "frozen", "moana", "lion king", "aladdin"]:
         category_movies = movies[movies['title'].str.contains(
             "Frozen|Moana|Lion|Beauty|Aladdin", case=False, na=False)]
@@ -82,7 +84,7 @@ st.header('🎬 Movie Recommender System')
 movie_list = movies['title'].values
 
 selected_movie = st.selectbox(
-    "Select a movie",
+    "🔍 Search and select a movie",
     movie_list
 )
 
