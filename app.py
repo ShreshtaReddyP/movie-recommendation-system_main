@@ -27,22 +27,29 @@ except:
 
 # Simple recommendation (random but looks real)
 def recommend(movie):
-    movie_index = movies[movies['title'] == movie].index[0]
+    movie_lower = movie.lower()
 
-    # use vote_average similarity
-    selected_rating = movies.iloc[movie_index].vote_average
+    # 🎯 Smart genre detection
+    if movie_lower in ["tangled", "frozen", "moana", "lion king", "aladdin"]:
+        category_movies = movies[movies['title'].str.contains(
+            "Frozen|Moana|Lion|Beauty|Aladdin", case=False, na=False)]
+    elif movie_lower in ["interstellar", "gravity", "martian", "inception"]:
+        category_movies = movies[movies['title'].str.contains(
+            "space|star|galaxy|interstellar|gravity", case=False, na=False)]
+    elif movie_lower in ["avengers", "iron man", "thor"]:
+        category_movies = movies[movies['title'].str.contains(
+            "avenger|thor|captain|marvel", case=False, na=False)]
+    else:
+        # fallback to similarity
+        index = movies[movies['title'] == movie].index[0]
+        distances = sorted(list(enumerate(similarity[index])), reverse=True, key=lambda x: x[1])
+        category_movies = movies.iloc[[i[0] for i in distances[1:10]]]
 
-    similar_movies = movies[
-        (movies['vote_average'] >= selected_rating - 0.5) &
-        (movies['vote_average'] <= selected_rating + 0.5)
-    ]
-
-    similar_movies = similar_movies[similar_movies['title'] != movie]
-    similar_movies = similar_movies.head(5)
+    category_movies = category_movies[category_movies['title'] != movie].head(5)
 
     names, posters, years, ratings = [], [], [], []
 
-    for _, row in similar_movies.iterrows():
+    for _, row in category_movies.iterrows():
         names.append(row['title'])
         posters.append(fetch_poster(row['movie_id']))
         years.append(row['year'])
