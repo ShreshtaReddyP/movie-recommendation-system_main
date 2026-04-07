@@ -27,11 +27,18 @@ except:
 
 # Simple recommendation (random but looks real)
 def recommend(movie):
-    movie_data = movies[movies['title'] == movie].iloc[0]
-    genre = movie_data['genres']
+    movie_index = movies[movies['title'] == movie].index[0]
 
-    similar_movies = movies[movies['genres'] == genre]
+    # Take nearby movies (based on index)
+    start = max(0, movie_index - 3)
+    end = min(len(movies), movie_index + 6)
+
+    similar_movies = movies.iloc[start:end]
+
+    # Remove selected movie
     similar_movies = similar_movies[similar_movies['title'] != movie]
+
+    # Take 5 movies
     similar_movies = similar_movies.head(5)
 
     names = []
