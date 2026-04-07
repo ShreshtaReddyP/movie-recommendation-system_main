@@ -27,24 +27,23 @@ except:
 
 # Simple recommendation (random but looks real)
 def recommend(movie):
-    movie_index = movies[movies['title'] == movie].index[0]
-    
-    # pick 5 random movies (excluding selected)
-    indices = list(range(len(movies)))
-    indices.remove(movie_index)
-    random_movies = random.sample(indices, 5)
+    movie_data = movies[movies['title'] == movie].iloc[0]
+    genre = movie_data['genres']
+
+    similar_movies = movies[movies['genres'] == genre]
+    similar_movies = similar_movies[similar_movies['title'] != movie]
+    similar_movies = similar_movies.head(5)
 
     names = []
     posters = []
     years = []
     ratings = []
 
-    for i in random_movies:
-        movie_id = movies.iloc[i].movie_id
-        names.append(movies.iloc[i].title)
-        posters.append(fetch_poster(movie_id))
-        years.append(movies.iloc[i].year)
-        ratings.append(movies.iloc[i].vote_average)
+    for _, row in similar_movies.iterrows():
+        names.append(row['title'])
+        posters.append(fetch_poster(row['movie_id']))
+        years.append(row['year'])
+        ratings.append(row['vote_average'])
 
     return names, posters, years, ratings
 
