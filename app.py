@@ -2,7 +2,9 @@ import pickle
 import streamlit as st
 import requests
 import pandas as pd
-import random
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.feature_extraction.text import CountVectorizer
+
 
 def fetch_poster(movie_id):
     url = f"https://api.themoviedb.org/3/movie/{movie_id}?api_key=8265bd1679663a7ea12ac168da84d2e8&language=en-US"
@@ -16,32 +18,46 @@ def fetch_poster(movie_id):
     return "https://placehold.co/500x750?text=No+Poster"
 
 
-# Load only movie_dict
+# ✅ Load data
 try:
     movies_dict = pickle.load(open('artifacts/movie_dict.pkl', 'rb'))
     movies = pd.DataFrame(movies_dict)
-    
 except:
     st.error("Model file not found.")
     st.stop()
 
 
-# Simple recommendation (random but looks real)
+# ✅ CREATE SIMILARITY (NO FILE NEEDED)
+movies = movies.head(1000)  # keep app fast
+
+if 'tags' in movies.columns:
+    movies['tags'] = movies['tags'].astype(str).apply(lambda x: x.lower())
+    data = movies['tags']
+else:
+    data = movies['title']
+
+cv = CountVectorizer(max_features=2000, stop_words='english')
+vectors = cv.fit_transform(data).toarray()
+
+similarity = cosine_similarity(vectors)
+
+
+# ✅ RECOMMEND FUNCTION (HYBRID)
 def recommend(movie):
     movie_lower = movie.lower()
 
-    # 🎯 Smart genre detection
+    # 🎯 Smart genre-based boost
     if movie_lower in ["tangled", "frozen", "moana", "lion king", "aladdin"]:
         category_movies = movies[movies['title'].str.contains(
             "Frozen|Moana|Lion|Beauty|Aladdin", case=False, na=False)]
     elif movie_lower in ["interstellar", "gravity", "martian", "inception"]:
         category_movies = movies[movies['title'].str.contains(
-            "space|star|galaxy|interstellar|gravity", case=False, na=False)]
+            "space|star|galaxy|interstellar|gravity|martian", case=False, na=False)]
     elif movie_lower in ["avengers", "iron man", "thor"]:
         category_movies = movies[movies['title'].str.contains(
             "avenger|thor|captain|marvel", case=False, na=False)]
     else:
-        # fallback to similarity
+        # 🔥 similarity-based fallback
         index = movies[movies['title'] == movie].index[0]
         distances = sorted(list(enumerate(similarity[index])), reverse=True, key=lambda x: x[1])
         category_movies = movies.iloc[[i[0] for i in distances[1:10]]]
@@ -59,6 +75,7 @@ def recommend(movie):
     return names, posters, years, ratings
 
 
+# ✅ UI
 st.set_page_config(layout="wide")
 st.header('🎬 Movie Recommender System')
 
@@ -74,7 +91,7 @@ if st.button('Show Recommendation'):
 
     cols = st.columns(5)
 
-    for i in range(5):
+    for i in range(len(names)):
         with cols[i]:
             st.text(names[i])
             st.image(posters[i])
