@@ -20,6 +20,7 @@ def fetch_poster(movie_id):
 try:
     movies_dict = pickle.load(open('artifacts/movie_dict.pkl', 'rb'))
     movies = pd.DataFrame(movies_dict)
+    similarity = pickle.load(open('artifacts/similarity.pkl', 'rb'))
 except:
     st.error("Model file not found.")
     st.stop()
