@@ -29,22 +29,18 @@ except:
 def recommend(movie):
     movie_index = movies[movies['title'] == movie].index[0]
 
-    # Take nearby movies (based on index)
-    start = max(0, movie_index - 3)
-    end = min(len(movies), movie_index + 6)
+    # use vote_average similarity
+    selected_rating = movies.iloc[movie_index].vote_average
 
-    similar_movies = movies.iloc[start:end]
+    similar_movies = movies[
+        (movies['vote_average'] >= selected_rating - 0.5) &
+        (movies['vote_average'] <= selected_rating + 0.5)
+    ]
 
-    # Remove selected movie
     similar_movies = similar_movies[similar_movies['title'] != movie]
-
-    # Take 5 movies
     similar_movies = similar_movies.head(5)
 
-    names = []
-    posters = []
-    years = []
-    ratings = []
+    names, posters, years, ratings = [], [], [], []
 
     for _, row in similar_movies.iterrows():
         names.append(row['title'])
