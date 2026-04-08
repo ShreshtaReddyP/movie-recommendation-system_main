@@ -55,8 +55,6 @@ A recommendation system's primary function is to find stuff that a person might 
 This is a streamlit web application that can recommend various kinds of similar movies based on an user interest.
 here is a demo,
 
-(https://movie-recommeder-system.herokuapp.com/)
-
 
 # Demo:
 
