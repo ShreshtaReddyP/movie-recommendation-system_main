@@ -1,10 +1,8 @@
-# Project: Movie Recommender System Using Machine Learning!
+Movie Recommender System Using Machine Learning
 
-<img src="demo/6.jpeg" alt="workflow" width="70%">
+In today's hectic environment, recommendation systems are becoming more and more crucial. Due to the numerous chores they must complete in the allotted 24 hours, people are constantly pressed for time. Because they assist them in making the best decisions without requiring them to use their cognitive resources, recommendation systems are crucial.
 
-Recommendation systems are becoming increasingly important in today’s extremely busy world. People are always short on time with the myriad tasks they need to accomplish in the limited 24 hours. Therefore, the recommendation systems are important as they help them make the right choices, without having to expend their cognitive resources.
-
-The purpose of a recommendation system basically is to search for content that would be interesting to an individual. Moreover, it involves a number of factors to create personalised lists of useful and interesting content specific to each user/individual. Recommendation systems are Artificial Intelligence based algorithms that skim through all possible options and create a customized list of items that are interesting and relevant to an individual. These results are based on their profile, search/browsing history, what other people with similar traits/demographics are watching, and how likely are you to watch those movies. This is achieved through predictive modeling and heuristics with the data available.
+A recommendation system's primary function is to find stuff that a person might find interesting. Additionally, it incorporates a variety of elements to provide customized lists of relevant and engaging material tailored to each user or individual. Recommendation systems are algorithms based on artificial intelligence that quickly scan through every option and produce a personalized list of things that are relevant and intriguing to each user. These outcomes are determined by their profile, search/browsing history, what other people with similar traits/demographics are watching, and how likely are you to watch those movies. This is achieved through predictive modeling and heuristics with the data available.
 
 # Types of Recommendation System :
 
@@ -57,7 +55,7 @@ The purpose of a recommendation system basically is to search for content that w
 This is a streamlit web application that can recommend various kinds of similar movies based on an user interest.
 here is a demo,
 
-* [Click here to run it live on server](https://movie-recommeder-system.herokuapp.com/)
+(https://movie-recommeder-system.herokuapp.com/)
 
 
 # Demo:
@@ -69,11 +67,8 @@ here is a demo,
 <img src="demo/3.png" alt="workflow" width="70%">
 
 
-# Dataset has been used:
-
 * [Dataset link](https://www.kaggle.com/tmdb/tmdb-movie-metadata?select=tmdb_5000_movies.csv)
 
-# Concept used to build the model.pkl file : cosine_similarity
 
 1 . Cosine Similarity is a metric that allows you to measure the similarity of the documents.
 
@@ -85,46 +80,5 @@ here is a demo,
 
 5 . For more details , check URL : https://www.learndatasci.com/glossary/cosine-similarity/
 
-# How to run?
-### STEPS:
-
-Clone the repository
-
-```bash
-https://github.com/entbappy/Movie-Recommender-System-Using-Machine-Learning.git
-```
-### STEP 01- Create a conda environment after opening the repository
-
-```bash
-conda create -n movie python=3.7.10 -y
-```
-
-```bash
-conda activate movie
-```
 
 
-### STEP 02- install the requirements
-```bash
-pip install -r requirements.txt
-```
-
-
-```bash
-#run this file to generate the models
-
-Movie Recommender System Data Analysis.ipynb
-```
-
-Now run,
-```bash
-streamlit run app.py
-```
-
-
-```bash
-Author: Bappy Ahmed
-Data Scientist
-Email: entbappy73@gmail.com
-
-```
