@@ -60,7 +60,7 @@ here is a demo,
 
 # Demo:
 
-<img src="demo/1.png" alt="workflow" width="70%">
+<img width="1912" height="943" alt="image" src="https://github.com/user-attachments/assets/bd820553-63a1-4420-830a-e58f7ba8ca97">
 
 <img src="demo/2.png" alt="workflow" width="70%">
 
