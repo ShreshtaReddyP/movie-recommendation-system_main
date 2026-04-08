@@ -62,9 +62,10 @@ here is a demo,
 
 <img width="1912" height="943" alt="image" src="https://github.com/user-attachments/assets/bd820553-63a1-4420-830a-e58f7ba8ca97">
 
-<img src="demo/2.png" alt="workflow" width="70%">
+<img width="1915" height="935" alt="image" src="https://github.com/user-attachments/assets/1f7af3a7-5c77-49f4-b1d2-bb1bc9e19209" />
 
-<img src="demo/3.png" alt="workflow" width="70%">
+<img width="1915" height="927" alt="image" src="https://github.com/user-attachments/assets/d3b23bef-6274-4402-9a19-d1b3104a4c92" />
+
 
 
 * [Dataset link](https://www.kaggle.com/tmdb/tmdb-movie-metadata?select=tmdb_5000_movies.csv)
